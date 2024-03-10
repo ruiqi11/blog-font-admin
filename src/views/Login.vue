@@ -23,6 +23,9 @@
               <img @click="changeCheckCode" :src="checkCodeUrl" alt="验证码">
             </div>
           </el-form-item>
+          <el-form-item>
+            <el-checkbox v-model="formData.remmenber">记住密码</el-checkbox>
+          </el-form-item>
           <el-button @click="login" size="large" type="primary">登录</el-button>
         </el-form>
       </div>
@@ -32,6 +35,7 @@
 <script setup>
 import { ref, getCurrentInstance } from "vue"
 import md5 from 'js-md5'
+import VueCookies from 'vue-cookies'
 
   const { proxy } = getCurrentInstance();
   const formData = ref({})
@@ -46,6 +50,13 @@ import md5 from 'js-md5'
   const changeCheckCode = () => {
     checkCodeUrl.value = api.checkCode + '?' + new Date().getTime()
   }
+
+  const init = ()=> {
+    const loginInfo = VueCookies.get('loginInfo')
+    if(!loginInfo) return
+    Object.assign(formData.value, loginInfo)
+  }
+  init()
 
 
   const rules = {
@@ -67,9 +78,12 @@ import md5 from 'js-md5'
     formRef.value.validate(async (valid) => {
       if(!valid) return
 
+      let cookieLoginInfo = VueCookies.get("loginInfo");
+      let cookiePassword = cookieLoginInfo?.password;
+
       let params = {
         account: formData.value.account,
-        password: md5(formData.value.password),
+        password: formData.value.password !== cookiePassword ? md5(formData.value.password) : formData.value.password,
         checkCode: formData.value.checkCode
       }
 
@@ -82,6 +96,15 @@ import md5 from 'js-md5'
       })
       if (!result) return
       proxy.Message.success("登录成功");
+
+      let loginInfo = {
+        account: params.account,
+        password: params.password,
+        remmenber: formData.value.remmenber,
+      }
+      if(formData.value.remmenber){
+        VueCookies.set("loginInfo", loginInfo, "7d")
+      }
     })
   }
 </script>
