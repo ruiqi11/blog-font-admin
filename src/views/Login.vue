@@ -19,7 +19,7 @@
           </el-form-item>
           <el-form-item prop="checkCode">
             <div class="check-code-box">
-              <el-input placeholder="请输入验证码" v-model="formData.checkCode" size="large"></el-input>
+              <el-input v-model="formData.checkCode" @keyup.enter.native="login" size="large" placeholder="请输入验证码"></el-input>
               <img @click="changeCheckCode" :src="checkCodeUrl" alt="验证码">
             </div>
           </el-form-item>
@@ -34,12 +34,14 @@
   
 <script setup>
 import { ref, getCurrentInstance } from "vue"
+import { useRouter } from 'vue-router'
 import md5 from 'js-md5'
 import VueCookies from 'vue-cookies'
 
   const { proxy } = getCurrentInstance();
-  const formData = ref({})
+  const router = useRouter();
 
+  const formData = ref({})
   const api = {
     checkCode: 'api/checkCode',
     login: "/login"
@@ -96,6 +98,13 @@ import VueCookies from 'vue-cookies'
       })
       if (!result) return
       proxy.Message.success("登录成功");
+
+      setTimeout(() => {
+        router.push('/home')
+      })
+
+      // 保存用户信息
+      VueCookies.set("userInfo", result.data, 0);
 
       let loginInfo = {
         account: params.account,
