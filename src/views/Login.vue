@@ -30,11 +30,15 @@
 </template>
   
 <script setup>
-import { ref } from "vue"
-  const formData = ref(null)
+import { ref, getCurrentInstance } from "vue"
+import md5 from 'js-md5'
+
+  const { proxy } = getCurrentInstance();
+  const formData = ref({})
 
   const api = {
     checkCode: 'api/checkCode',
+    login: "/login"
   }
 
 
@@ -60,8 +64,24 @@ import { ref } from "vue"
   }
   const formRef = ref(null)
   const login = () => {
-    formRef.value.validate((valid) => {
+    formRef.value.validate(async (valid) => {
       if(!valid) return
+
+      let params = {
+        account: formData.value.account,
+        password: md5(formData.value.password),
+        checkCode: formData.value.checkCode
+      }
+
+      let result = await proxy.Request({
+        url: api.login,
+        params: params,
+        errorCallback: () => {
+          changeCheckCode();
+        }
+      })
+      if (!result) return
+      proxy.Message.success("登录成功");
     })
   }
 </script>
