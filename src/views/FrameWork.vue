@@ -12,7 +12,7 @@
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item @click="goUserInfo">
+                <el-dropdown-item>
                   个人信息
                 </el-dropdown-item>
                 <el-dropdown-item @click="logout">退出</el-dropdown-item>
@@ -27,7 +27,7 @@
                   class="left-aside">
           <div>
             <el-button class="post-btn"
-                       @click="createHtml"> 发布</el-button>
+                       > 发布</el-button>
           </div>
           <div class="menu-panel">
             <ul>
@@ -153,6 +153,17 @@ const getUserInfo = async () => {
 }
 getUserInfo();
 
+// 监听路由变化，改变选中菜单样式
+const activePath = ref(null)
+watch(route, (newVal, oldVal) => {
+  activePath.value = newVal.path;
+  for(let item of menuList.value){
+      if(Array.isArray(item.children)){
+        let childrenPathList = item.children.map(item => item.path)
+        item.open = childrenPathList.includes(activePath.value)
+      }
+  }
+}, {immediate: true, deep: true})
 
 const logout = () => {
   proxy.Confirm(`你确定要删除退出吗`, async () => {

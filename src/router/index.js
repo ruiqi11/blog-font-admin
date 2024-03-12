@@ -7,10 +7,24 @@ const routes = [{
       import ('../views/Login.vue')
   },
   {
-    name: '首页',
-    path: '/home',
+    name: '框架页',
+    path: '/',
     component: () =>
-      import ('../views/FrameWork.vue')
+      import ('../views/FrameWork.vue'),
+    redirect: '/blog/list',
+    children: [{
+        name: '博客管理',
+        path: '/blog/list',
+        component: () =>
+          import ('../views/blog/Blog.vue'),
+      },
+      {
+        name: '博客分类',
+        path: '/blog/category',
+        component: () =>
+          import ('../views/blog/BlogCategory.vue'),
+      },
+    ]
   },
 ]
 

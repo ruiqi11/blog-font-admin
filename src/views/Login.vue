@@ -100,11 +100,11 @@ import VueCookies from 'vue-cookies'
       proxy.Message.success("登录成功");
 
       setTimeout(() => {
-        router.push('/home')
+        router.push('/')
       })
 
       // 保存用户信息
-      VueCookies.set("userInfo", result.data, 0);
+      VueCookies.set("userInfo", result.data, 0); // 浏览器关闭需要重新获取
 
       let loginInfo = {
         account: params.account,
@@ -112,7 +112,7 @@ import VueCookies from 'vue-cookies'
         remmenber: formData.value.remmenber,
       }
       if(formData.value.remmenber){
-        VueCookies.set("loginInfo", loginInfo, "7d")
+        VueCookies.set("loginInfo", loginInfo, "7d") // 7天
       }
     })
   }
