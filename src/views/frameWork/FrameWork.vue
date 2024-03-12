@@ -19,15 +19,15 @@
               </el-dropdown-menu>
             </template>
           </el-dropdown>
-          <div class="avatar"><img :src="userInfo.avatar"></div>
+          <div class="avatar">
+            <img :src="userInfo.avatar">
+          </div>
         </div>
       </el-header>
       <el-container class="container">
-        <el-aside width="200px"
-                  class="left-aside">
+        <el-aside width="200px" class="left-aside">
           <div>
-            <el-button class="post-btn"
-                       > 发布</el-button>
+            <el-button class="post-btn"> 发布</el-button>
           </div>
           <div class="menu-panel">
             <ul>
@@ -38,12 +38,15 @@
                   <span class="menu-title">{{menu.title}}</span>
                   <span :class="['iconfont','open-close',menu.open?'icon-open':'icon-close']"></span>
                 </span>
-                <ul class="sub-menu"
-                    v-show="menu.open">
+                <ul class="sub-menu" v-show="menu.open">
                   <li v-for="subMenu in menu.children" :key="subMenu.title">
-                    <router-link :to="subMenu.path"
-                                 :class="['sub-menu-item',activePath==subMenu.path?'active':'']"
-                                 v-if="subMenu.roleType == null || subMenu.roleType == userInfo.roleType">{{subMenu.title}}</router-link>
+                    <router-link
+                      :to="subMenu.path"
+                      :class="['sub-menu-item',activePath==subMenu.path?'active':'']"
+                      v-if="subMenu.roleType == null || subMenu.roleType == userInfo.roleType"
+                    >
+                    {{subMenu.title}}
+                    </router-link>
                   </li>
                 </ul>
               </li>
@@ -67,71 +70,9 @@ const router = useRouter();
 const route = useRoute();
 // const store = useStore();
 const { proxy } = getCurrentInstance();
-const menuList = ref([
-  {
-    title: "博客",
-    icon: "icon-blog",
-    open: true,
-    children: [
-      {
-        title: "博客管理",
-        path: "/blog/list",
-      },
-      {
-        title: "分类管理",
-        path: "/blog/category",
-      },
-    ],
-  },
-  {
-    title: "专题",
-    icon: "icon-zhuanti",
-    open: true,
-    children: [
-      {
-        title: "专题管理",
-        path: "/special/list",
-      },
-    ],
-  },
-  {
-    title: "设置",
-    icon: "icon-settings",
-    open: true,
-    children: [
-      {
-        title: "个人信息设置",
-        path: "/settings/my",
-      },
-      {
-        title: "博客成员",
-        path: "/settings/user",
-      },
-      {
-        title: "系统设置",
-        path: "/settings/sysInfo",
-        roleType: 1,
-      },
-    ],
-  },
-  {
-    title: "回收站",
-    icon: "icon-delete",
-    open: true,
-    children: [
-      {
-        title: "回收站",
-        path: "/recovery/list",
-      },
-    ],
-  },
-]);
-const api = {
-  "getUserInfo": "getUserInfo",
-  "logout": "logout",
-  "createHtml": "createHtml",
-  "checkProgress": "checkProgress",
-}
+
+import { menuList, api } from './conifg.js' // 菜单
+
 const openClose = (index) => {
   const open = menuList.value[index].open;
   menuList.value[index].open = !open;
@@ -145,9 +86,7 @@ const getUserInfo = async () => {
     url: api.getUserInfo
   })
 
-  if (!result) {
-    return;
-  }
+  if (!result) return;
   userInfo.value = result.data;
   userInfo.value.avatar = 'http://localhost:8081/api/file/getImage/' + result.data.avatar;
 }
@@ -158,9 +97,8 @@ const activePath = ref(null)
 watch(route, (newVal, oldVal) => {
   activePath.value = newVal.path;
   for(let item of menuList.value){
-      if(Array.isArray(item.children)){
-        let childrenPathList = item.children.map(item => item.path)
-        item.open = childrenPathList.includes(activePath.value)
+      if(Array.isArray(item.children) && item.children.length){
+        item.open = item.children.map(item => item.path).includes(activePath.value)
       }
   }
 }, {immediate: true, deep: true})
@@ -170,9 +108,7 @@ const logout = () => {
     let result = await proxy.Request({
       url: api.logout,
     })
-    if (!result) {
-      return;
-    }
+    if (!result) return;
     router.push("/login");
   })
 }
