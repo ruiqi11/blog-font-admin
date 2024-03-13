@@ -6,3 +6,24 @@ body {
   margin: 0px;
   padding: 0px;
 }
+
+.op {
+  display: flex;
+  align-items: center;
+}
+
+a.a-link {
+  text-decoration: none;
+  color: #1890ff;
+}
+
+.not-allow {
+  cursor: not-allowed;
+  color: #ddd;
+  text-decoration: none;
+}
+
+.a-link {
+  color: #1890ff;
+  text-decoration: none;
+}
