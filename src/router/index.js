@@ -16,7 +16,7 @@ const routes = [{
         name: '博客管理',
         path: '/blog/list',
         component: () =>
-          import ('../views/blog/Blog.vue'),
+          import ('../views/blog/BlogList.vue'),
       },
       {
         name: '博客分类',

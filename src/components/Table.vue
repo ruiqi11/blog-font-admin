@@ -22,6 +22,7 @@
                        align="center"></el-table-column>
       <!--数据列-->
       <template v-for="(column, index) in columns">
+        <!-- scopedSlots有值，需要提供插槽进行特殊处理 -->
         <template v-if="column.scopedSlots">
           <el-table-column :key="index"
                            :prop="column.prop"
@@ -36,6 +37,7 @@
             </template>
           </el-table-column>
         </template>
+        <!-- 直接渲染出数据 -->
         <template v-else>
           <el-table-column :key="index"
                            :prop="column.prop"

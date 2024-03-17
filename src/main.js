@@ -6,6 +6,9 @@ import Table from '@/components/Table.vue'
 import Cover from '@/components/Cover.vue'
 import Dialog from '@/components/Dialog.vue'
 import CoverUpload from '@/components/CoverUpload.vue'
+import Window from '@/components/Window.vue'
+import EditorMarkdown from '@/components/EditorMarkdown.vue'
+import EditorHtml from '@/components/EditorHtml.vue'
 
 import ElementPlus from 'element-plus'
 import "element-plus/dist/index.css"
@@ -25,6 +28,9 @@ app.component("Table", Table);
 app.component("Cover", Cover);
 app.component("Dialog", Dialog);
 app.component("CoverUpload", CoverUpload);
+app.component("Window", Window);
+app.component("EditorMarkdown", EditorMarkdown);
+app.component("EditorHtml", EditorHtml);
 
 app.config.globalProperties.Request = Request;
 app.config.globalProperties.Message = Message;
